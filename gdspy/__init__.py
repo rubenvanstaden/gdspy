@@ -259,21 +259,24 @@ class Polygon(object):
 
     def get_bounding_box(self):
         """
-        Returns the bounding box for this cell.
+        Returns the bounding box of the polygon.
 
         Returns
         -------
         out : Numpy array[2,2] or ``None``
-            Bounding box of this cell [[x_min, y_min], [x_max, y_max]], or
-            ``None`` if the cell is empty.
+            Bounding box of this polygon [[x_min, y_min], [x_max, y_max]], or
+            ``None`` if the polygon is empty.
         """
+        if len(self.points) == 0:
+            return None
+
+        all_points = self.points.transpose()
         bb = numpy.array(((1e300, 1e300), (-1e300, -1e300)))
-        if len(self.points) > 0:
-            all_points = self.points.transpose()
-            bb[0, 0] = min(bb[0, 0], all_points[0].min())
-            bb[0, 1] = min(bb[0, 1], all_points[1].min())
-            bb[1, 0] = max(bb[1, 0], all_points[0].max())
-            bb[1, 1] = max(bb[1, 1], all_points[1].max())
+        bb[0, 0] = min(bb[0, 0], all_points[0].min())
+        bb[0, 1] = min(bb[0, 1], all_points[1].min())
+        bb[1, 0] = max(bb[1, 0], all_points[0].max())
+        bb[1, 1] = max(bb[1, 1], all_points[1].max())
+        
         return bb
 
     def fracture(self, max_points=199, precision=1e-3):
